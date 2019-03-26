@@ -37,6 +37,7 @@ library
                      STS.Snap
                      STS.Utxo
                      STS.Utxow
+                     STS.Vrf
   hs-source-dirs: src
   ghc-options:
     -Wall
