@@ -15,7 +15,6 @@ import GHC.Generics (Generic)
 import Control.State.Transition.Generator
 import Ledger.Core
 import Ledger.Delegation
-import Ledger.Signatures
 
 data BlockHeader
   = MkBlockHeader

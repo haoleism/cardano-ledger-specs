@@ -1,6 +1,9 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DerivingStrategies #-}
+{-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE UndecidableInstances #-}
+
 module Ledger.Core where
 
 import qualified Crypto.Hash as Crypto
@@ -8,6 +11,7 @@ import qualified Data.ByteArray as BA
 import qualified Data.ByteString.Char8 as BS
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
+import Data.Monoid (Sum(..))
 import Data.Set (Set)
 import qualified Data.Set as Set
 import Data.Word (Word64)
@@ -15,7 +19,10 @@ import GHC.Generics (Generic)
 import Numeric.Natural (Natural)
 
 import Data.AbstractSize
-import Ledger.Signatures
+
+
+-- | An encoded hash of part of the system.
+type Hash = Crypto.Digest Crypto.SHA256
 
 -- | Hash part of the ledger paylod
 class HasHash a where
@@ -112,6 +119,19 @@ minusSlot (Slot m) (SlotCount n)
 
 newtype BlockCount = BlockCount { unBlockCount :: Word64 }
   deriving (Eq, Ord, Num, Show)
+
+---------------------------------------------------------------------------------
+-- Transactions
+---------------------------------------------------------------------------------
+
+-- |The address of a transaction output, used to identify the owner.
+newtype Addr = Addr VKey
+  deriving (Show, Eq, Ord)
+
+-- | A unit of value held by a UTxO.
+newtype Value = Value Natural
+  deriving (Show, Eq, Ord)
+  deriving (Semigroup, Monoid) via (Sum Natural)
 
 ---------------------------------------------------------------------------------
 -- Domain restriction and exclusion
